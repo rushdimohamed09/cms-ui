@@ -45,6 +45,11 @@ import { getPages, getToken } from '../constants/endpoints';
 export default {
   data() {
     return {
+      page: {
+        content: {
+          title: 'Edit Page | CMS'
+        }
+      },
       newPageData: {
         parent_id: null,
         slug: '',
@@ -63,6 +68,7 @@ export default {
     },
   },
   created() {
+    document.title = this.page.content.title;
     // Extract the page ID from the URL
     const url = new URL(window.location.href);
     const pathnameParts = url.pathname.split('/');
@@ -73,13 +79,10 @@ export default {
   },
   methods: {
      fetchPageData() {
-      // Make an Axios call to fetch data for the page with this ID
       axios.get(`${getPages}/${this.pageId}`)
         .then((response) => {
-          // Log the result
           console.log('Fetched Page Data:', response.data);
 
-          // Populate the input fields with the data
           const { parent_id, slug, title, content } = response.data;
           this.newPageData = {
             parent_id,

@@ -46,6 +46,11 @@ import { getPages } from '../constants/endpoints';
 export default {
   data() {
     return {
+      page: {
+        content: {
+          title: 'All Pages | CMS'
+        }
+      },
       currentPage: 1,
       entriesPerPage: 10,
       totalCount: 0,
@@ -54,6 +59,7 @@ export default {
     };
   },
   created() {
+    document.title = this.page.content.title;
     // Fetch table data from the API and initialize DataTable after the component is mounted
     this.fetchTableData();
   },
@@ -70,12 +76,10 @@ export default {
           this.tableData = response.data.data;
           this.totalCount = response.data.count;
           
-          // Check if DataTable is already initialized, and destroy it if it is
           if (this.dataTable) {
             this.dataTable.destroy();
           }
           
-          // Initialize DataTable after the component is mounted and data is loaded
           this.$nextTick(() => {
             this.initDataTable();
           });
@@ -118,11 +122,9 @@ export default {
     deleteRow(id) {
       console.log(`Delete button clicked for row with ID ${id}`);
       if (confirm('Are you sure you want to delete this item?')) {
-        // If the user clicks OK, proceed with the deletion
         axios
-          .delete(`${getPages}/${id}`) // Replace with your delete API endpoint
+          .delete(`${getPages}/${id}`)
           .then((response) => {
-            // If the deletion is successful, refresh the table
             console.log(response);
             this.fetchTableData();
           })

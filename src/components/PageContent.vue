@@ -26,11 +26,16 @@ import {getPageContent} from '../constants/endpoints';
 export default {
   data() {
     return {
-      page: {},
+      page: {
+        content: {
+          title: 'Content Page | CMS'
+        }
+      }
     };
   },
   created() {
     console.log('PageContent component created');
+    document.title = this.page.content.title;
     this.fetchPage();
   },
   methods: {
