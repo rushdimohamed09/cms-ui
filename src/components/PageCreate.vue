@@ -44,6 +44,11 @@ import { getToken, getPages } from '../constants/endpoints';
 export default {
   data() {
     return {
+      page: {
+        content: {
+          title: 'Add Page | CMS'
+        }
+      },
       newPageData: {
         parent_id: null,
         slug: '',
@@ -51,8 +56,11 @@ export default {
         content: '',
       },
       message: '',
-      messageType: '', // New property to hold message type (success or error)
+      messageType: '',
     };
+  },
+  mounted() {
+    document.title = this.page.content.title;
   },
   computed: {
     // Compute the message type class based on messageType
@@ -63,42 +71,30 @@ export default {
   methods: {
     async submitForm() {
       try {
-        // Step 1: Make a GET request to retrieve CSRF token
         const tokenResponse = await axios.get(getToken);
         
-        // Check if the response status is 200 OK
         if (tokenResponse.status === 200) {
-          // Extract the CSRF token from the response text
           const csrfToken = tokenResponse.data;
 
-          // Set the CSRF token in the Axios headers for all requests
           axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-          // Step 2: Make a POST request with form data and CSRF token in headers
           const response = await axios.post(getPages, this.newPageData);
 
-          // Set the success message
           this.message = response.data.message;
           this.messageType = 'success';
 
-          // Clear the form fields
           this.clearForm();
         } else {
           console.error('Failed to retrieve CSRF token');
-          
-         // Set the error message
           this.message = 'Failed to retrieve CSRF token. Please try again later';
           this.messageType = 'error';
         }
       } catch (error) {
         console.error('Error creating page:', error);
-
-        // Set the error message
         this.message = 'Error creating page. Please try again later.';
         this.messageType = 'error';
       }
     },
     clearForm() {
-      // Clear the form fields by resetting the data object
       this.newPageData = {
         parent_id: null,
         slug: '',
